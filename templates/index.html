@@ -3,797 +3,1110 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DevQuest | Next-Gen Tech Assessment</title>
+  <title>DevQuest 2.0 | Next-Gen Tech Arena</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
   <style>
     :root {
-      --bg: #070913;
-      --surface: rgba(18, 22, 38, 0.75);
-      --surface-border: rgba(255, 255, 255, 0.08);
-      --surface-hover: rgba(28, 34, 58, 0.9);
+      --bg-deep: #060814;
+      --card-bg: rgba(15, 20, 38, 0.75);
+      --card-border: rgba(99, 102, 241, 0.2);
       --primary: #6366f1;
-      --primary-glow: rgba(99, 102, 241, 0.4);
-      --accent: #06b6d4;
-      --accent-glow: rgba(6, 182, 212, 0.35);
-      --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.25);
-      --danger: #f43f5e;
-      --danger-glow: rgba(244, 63, 94, 0.25);
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --primary-neon: #818cf8;
+      --cyan: #06b6d4;
+      --cyan-neon: #22d3ee;
+      --pink: #ec4899;
+      --amber: #f59e0b;
+      --emerald: #10b981;
+      --text-main: #f8fafc;
+      --text-dim: #94a3b8;
+      --glow-purple: rgba(99, 102, 241, 0.35);
+      --glow-cyan: rgba(6, 182, 212, 0.3);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: var(--bg-deep);
+      color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.18) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+    }
+
+    /* Animated Cyber Grid */
+    .cyber-grid {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-size: 50px 50px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, transparent 80%);
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* Ambient Glowing Orbs */
     .orb {
       position: fixed;
       border-radius: 50%;
-      filter: blur(120px);
+      filter: blur(140px);
       z-index: 0;
       pointer-events: none;
-      opacity: 0.45;
-      animation: floatOrb 18s ease-in-out infinite alternate;
+      opacity: 0.5;
+      animation: floatMotion 20s ease-in-out infinite alternate;
     }
-    .orb-1 { width: 520px; height: 520px; background: radial-gradient(circle, #6366f1, #4338ca); top: -100px; left: -100px; }
-    .orb-2 { width: 450px; height: 450px; background: radial-gradient(circle, #06b6d4, #0284c7); bottom: -100px; right: -100px; animation-duration: 22s; }
-    .orb-3 { width: 350px; height: 350px; background: radial-gradient(circle, #ec4899, #8b5cf6); top: 40%; left: 60%; opacity: 0.25; }
+    .orb-1 { width: 550px; height: 550px; background: #6366f1; top: -150px; left: -100px; }
+    .orb-2 { width: 500px; height: 500px; background: #06b6d4; bottom: -100px; right: -120px; animation-duration: 25s; }
+    .orb-3 { width: 400px; height: 400px; background: #ec4899; top: 35%; left: 55%; opacity: 0.25; }
 
-    @keyframes floatOrb {
+    @keyframes floatMotion {
       0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(80px, 60px) scale(1.15); }
+      100% { transform: translate(70px, 50px) scale(1.15); }
     }
 
-    .bg-grid {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-image: linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-                        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .main-wrap {
+    /* Layout Wrapper */
+    .arena-container {
       position: relative;
       z-index: 1;
-      max-width: 860px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 32px 20px 80px;
+      padding: 24px 20px 80px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* Navigation Bar */
-    .navbar {
+    /* Top Cyber Navigation */
+    .top-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 24px;
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      backdrop-filter: blur(16px);
-      border-radius: 18px;
-      margin-bottom: 28px;
+      padding: 14px 22px;
+      background: rgba(13, 17, 34, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
     }
-    .logo {
+    .brand-group {
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
     }
-    .logo-badge {
-      width: 38px;
-      height: 38px;
+    .brand-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
       background: linear-gradient(135deg, #6366f1, #06b6d4);
-      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 16px var(--primary-glow);
-      font-size: 18px;
+      font-size: 22px;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+      animation: iconPulse 3s infinite alternate;
     }
-    .status-badge {
+    @keyframes iconPulse {
+      0% { transform: scale(1); box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
+      100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(6, 182, 212, 0.7); }
+    }
+    .brand-title {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: #38bdf8;
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 2px 8px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+    }
+    .sound-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #cbd5e1;
+      padding: 8px 14px;
+      border-radius: 12px;
       font-size: 13px;
-      color: #34d399;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      padding: 6px 14px;
-      border-radius: 20px;
       font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
     }
-    .status-dot {
-      width: 8px; height: 8px;
-      background: #10b981;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #10b981;
-      animation: pulseDot 2s infinite;
+    .sound-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--cyan);
+      color: #fff;
     }
-    @keyframes pulseDot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+    .admin-link {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(6, 182, 212, 0.15));
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      color: #a5b4fc;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.25s;
+    }
+    .admin-link:hover {
+      border-color: var(--primary-neon);
+      color: #fff;
+      box-shadow: 0 0 16px var(--glow-purple);
+      transform: translateY(-1px);
+    }
 
-    /* Glass Cards */
-    .glass-card {
-      background: var(--surface);
-      border: 1px solid var(--surface-border);
-      backdrop-filter: blur(20px);
-      border-radius: 24px;
-      padding: 36px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    /* Futuristic Glass Card */
+    .cyber-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(28px);
+      border-radius: 28px;
+      padding: 40px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
+      animation: fadeInCard 0.4s ease-out;
     }
-    .glass-card::before {
+    @keyframes fadeInCard {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .cyber-card::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, var(--primary), var(--accent), transparent);
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, #6366f1, #06b6d4, #ec4899, transparent);
     }
 
-    /* 1. WELCOME SCREEN */
-    .hero-pill {
+    /* WELCOME SCREEN STYLES */
+    .hero-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 6px 16px;
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      border-radius: 30px;
-      color: #818cf8;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 100px;
+      color: #a5b4fc;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       margin-bottom: 20px;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
     }
-    .hero-title {
-      font-size: 40px;
+    .hero-headline {
+      font-size: 44px;
       font-weight: 900;
       line-height: 1.15;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      letter-spacing: -1.5px;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 80%, #38bdf8 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .hero-desc {
+    .hero-sub {
       font-size: 16px;
-      color: var(--text-muted);
+      color: var(--text-dim);
       line-height: 1.6;
-      margin-bottom: 30px;
+      margin-bottom: 28px;
+      max-width: 720px;
     }
 
-    .stats-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 14px;
-      margin-bottom: 34px;
+    /* Category Badges */
+    .tech-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
     }
-    .stat-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--surface-border);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      transition: transform 0.2s;
-    }
-    .stat-box:hover { transform: translateY(-3px); border-color: rgba(99, 102, 241, 0.3); }
-    .stat-num { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-    .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-
-    /* Inputs */
-    .input-group { margin-bottom: 22px; }
-    .input-label {
-      display: block;
-      font-size: 14px;
-      font-weight: 600;
+    .tech-pill {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       color: #cbd5e1;
-      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .modern-input {
+    .tech-pill:hover {
+      border-color: var(--cyan);
+      color: #38bdf8;
+    }
+
+    /* Holographic Stat Counters */
+    .stats-deck {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 640px) {
+      .stats-deck { grid-template-columns: repeat(2, 1fr); }
+      .hero-headline { font-size: 32px; }
+      .cyber-card { padding: 24px; }
+    }
+    .stat-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 18px;
+      padding: 18px 14px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(99, 102, 241, 0.4);
+      background: rgba(99, 102, 241, 0.06);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    }
+    .stat-emoji { font-size: 20px; margin-bottom: 6px; display: block; }
+    .stat-val { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .stat-caption { font-size: 11px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+
+    /* Avatar Picker */
+    .avatar-picker-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .avatars-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .avatar-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px solid rgba(255, 255, 255, 0.09);
+      border-radius: 16px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      color: #cbd5e1;
+      transition: all 0.2s;
+    }
+    .avatar-btn:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .avatar-btn.active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(6, 182, 212, 0.25));
+      border-color: var(--cyan);
+      color: #fff;
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.35);
+    }
+    .avatar-btn .emoji { font-size: 18px; }
+
+    /* Form Inputs */
+    .input-field-wrap {
+      margin-bottom: 20px;
+    }
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+    .cyber-input {
       width: 100%;
-      background: rgba(10, 14, 28, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 14px;
-      padding: 14px 18px;
+      background: rgba(9, 12, 24, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 16px 20px;
       color: #fff;
       font-size: 15px;
       outline: none;
-      transition: all 0.25s ease;
+      transition: all 0.25s;
     }
-    .modern-input:focus {
+    .cyber-input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--primary-glow);
-      background: rgba(15, 20, 38, 0.95);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25), 0 0 20px var(--glow-purple);
+      background: rgba(14, 18, 36, 0.95);
     }
-    .modern-input::placeholder { color: #64748b; }
+    .cyber-input::placeholder { color: #64748b; }
 
-    .btn-glow {
+    /* Mega Launch Button */
+    .launch-btn {
       width: 100%;
-      padding: 16px 28px;
-      background: linear-gradient(135deg, #6366f1, #06b6d4);
+      padding: 18px 32px;
+      background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
       border: none;
-      border-radius: 14px;
+      border-radius: 16px;
       color: #fff;
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 17px;
+      font-weight: 800;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 8px 24px var(--primary-glow);
-      transition: all 0.3s ease;
-      letter-spacing: 0.3px;
+      gap: 12px;
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.45);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
     }
-    .btn-glow:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(99, 102, 241, 0.6);
-      filter: brightness(1.1);
+    .launch-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(60deg, transparent, rgba(255,255,255,0.15), transparent);
+      transform: rotate(30deg);
+      transition: transform 0.6s;
     }
-    .btn-glow:active { transform: translateY(0); }
-    .btn-glow:disabled { opacity: 0.6; cursor: not-allowed; }
+    .launch-btn:hover::after {
+      transform: rotate(30deg) translate(50%, 50%);
+    }
+    .launch-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(6, 182, 212, 0.55);
+      filter: brightness(1.08);
+    }
+    .launch-btn:active { transform: translateY(0); }
 
-    /* 2. QUIZ ARENA SCREEN */
+    /* ========================================================
+       2. QUIZ ARENA VIEW
+       ======================================================== */
     #view-quiz { display: none; }
 
-    .quiz-tracker {
+    .arena-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
       gap: 14px;
       flex-wrap: wrap;
     }
-    .cand-chip {
+    .player-card {
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--surface-border);
-      padding: 8px 16px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 18px;
+      border-radius: 100px;
     }
-    .cand-avatar {
-      width: 24px; height: 24px;
+    .player-avatar-badge {
+      width: 32px; height: 32px;
       background: linear-gradient(135deg, #6366f1, #ec4899);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 16px;
+      box-shadow: 0 0 12px var(--glow-purple);
     }
-    .timer-badge {
+    .player-name-txt {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .arena-status-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .live-streak {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+      padding: 8px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .live-timer {
       display: flex;
       align-items: center;
       gap: 8px;
       background: rgba(6, 182, 212, 0.12);
-      border: 1px solid rgba(6, 182, 212, 0.3);
+      border: 1px solid rgba(6, 182, 212, 0.35);
       color: #38bdf8;
       padding: 8px 18px;
-      border-radius: 30px;
-      font-size: 14px;
-      font-weight: 700;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 800;
       font-family: 'JetBrains Mono', monospace;
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
     }
+    .live-timer.pulse-danger {
+      background: rgba(244, 63, 94, 0.2);
+      border-color: #f43f5e;
+      color: #fb7185;
+      animation: dangerBeep 1s infinite;
+    }
+    @keyframes dangerBeep { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-    .stepper-wrap {
+    /* Progress Shimmer Bar */
+    .arena-progress-wrap {
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      height: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      height: 10px;
       margin-bottom: 28px;
       overflow: hidden;
-      border: 1px solid var(--surface-border);
+      position: relative;
     }
-    .stepper-bar {
+    .arena-progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, #6366f1, #06b6d4);
-      border-radius: 10px;
+      background: linear-gradient(90deg, #6366f1, #06b6d4, #ec4899);
+      border-radius: 12px;
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    .arena-progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmerBar 2s infinite;
+    }
+    @keyframes shimmerBar {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
-    .q-meta {
+    /* Question Container */
+    .q-badge-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
     }
-    .q-num-pill {
-      font-size: 13px;
-      font-weight: 700;
+    .mission-pill {
+      font-size: 12px;
+      font-weight: 800;
       text-transform: uppercase;
+      letter-spacing: 0.8px;
       color: #818cf8;
       background: rgba(99, 102, 241, 0.15);
-      padding: 4px 14px;
-      border-radius: 20px;
-      letter-spacing: 0.5px;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 5px 14px;
+      border-radius: 100px;
     }
-    .q-pts-pill {
+    .xp-pill {
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
       color: #34d399;
       background: rgba(16, 185, 129, 0.12);
-      padding: 4px 14px;
-      border-radius: 20px;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 5px 14px;
+      border-radius: 100px;
     }
-    .question-prompt {
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
+    .q-title-text {
+      font-size: 24px;
+      font-weight: 800;
       line-height: 1.4;
+      color: #ffffff;
       margin-bottom: 28px;
-      letter-spacing: -0.3px;
+      letter-spacing: -0.5px;
     }
 
-    .options-grid {
+    /* Option Cards */
+    .options-stack {
       display: flex;
       flex-direction: column;
       gap: 14px;
-      margin-bottom: 32px;
+      margin-bottom: 34px;
     }
-    .opt-card {
+    .cyber-opt {
       display: flex;
       align-items: center;
       gap: 16px;
-      padding: 18px 22px;
-      background: rgba(255, 255, 255, 0.03);
+      padding: 18px 24px;
+      background: rgba(255, 255, 255, 0.02);
       border: 1.5px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
+      border-radius: 18px;
       cursor: pointer;
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      user-select: none;
+      position: relative;
     }
-    .opt-card:hover {
-      background: var(--surface-hover);
+    .cyber-opt:hover {
+      background: rgba(99, 102, 241, 0.08);
       border-color: rgba(99, 102, 241, 0.5);
-      transform: translateX(6px);
-    }
-    .opt-card.selected {
-      background: rgba(99, 102, 241, 0.18);
-      border-color: var(--primary);
-      box-shadow: 0 0 24px rgba(99, 102, 241, 0.35);
       transform: translateX(8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
-    .opt-key {
-      width: 34px; height: 34px;
-      border-radius: 10px;
+    .cyber-opt.active-choice {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.15));
+      border-color: var(--cyan);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.3);
+      transform: translateX(10px);
+    }
+    .key-badge {
+      width: 36px; height: 36px;
+      border-radius: 12px;
       background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 14px;
-      font-weight: 700;
+      font-weight: 800;
       color: #94a3b8;
-      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
       flex-shrink: 0;
+      transition: all 0.2s;
     }
-    .opt-card.selected .opt-key {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-      box-shadow: 0 0 12px var(--primary-glow);
+    .cyber-opt.active-choice .key-badge {
+      background: var(--cyan);
+      color: #060814;
+      border-color: var(--cyan);
+      box-shadow: 0 0 14px var(--cyan-neon);
     }
-    .opt-text {
+    .opt-label-txt {
       font-size: 16px;
+      font-weight: 600;
       color: #e2e8f0;
-      font-weight: 500;
       line-height: 1.4;
     }
 
-    .nav-controls {
+    /* Navigation Footer */
+    .arena-nav-bar {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       gap: 16px;
-      padding-top: 20px;
-      border-top: 1px solid var(--surface-border);
     }
-    .btn-secondary {
+    .btn-secondary-ghost {
       padding: 14px 26px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
       color: #cbd5e1;
       font-size: 15px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-    .btn-secondary:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-secondary-ghost:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.09);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+    .btn-secondary-ghost:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
 
-    /* 3. RESULTS SCREEN */
+    /* ========================================================
+       3. RESULTS & PERFORMANCE ANALYTICS
+       ======================================================== */
     #view-results { display: none; }
 
-    .results-hero {
+    .trophy-hero {
       text-align: center;
-      padding: 20px 0 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 32px;
     }
-    .score-circle-wrap {
-      width: 170px;
-      height: 170px;
-      margin: 0 auto 24px;
-      position: relative;
+    .rank-insignia {
+      width: 100px; height: 100px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2));
+      border: 2px solid var(--primary-neon);
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 48px;
+      box-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+      animation: rankBounce 1.5s infinite alternate ease-in-out;
     }
-    .score-circle-svg {
-      transform: rotate(-90deg);
-      width: 100%;
-      height: 100%;
+    @keyframes rankBounce {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
     }
-    .circle-bg { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: 10; }
-    .circle-fill {
-      fill: none;
-      stroke: url(#scoreGradient);
-      stroke-width: 10;
-      stroke-linecap: round;
-      stroke-dasharray: 440;
-      stroke-dashoffset: 440;
-      transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .score-inside {
-      position: absolute;
-      text-align: center;
-    }
-    .score-inside .number {
-      font-size: 38px;
+    .score-banner {
+      font-size: 48px;
       font-weight: 900;
-      color: #fff;
-      line-height: 1;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #ffffff, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .score-inside .sub {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 4px;
-      font-weight: 600;
-    }
-
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 22px;
-      border-radius: 30px;
-      font-size: 15px;
-      font-weight: 700;
+    .rank-tier-badge {
+      display: inline-block;
+      padding: 6px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       margin-bottom: 12px;
     }
-    .badge-pass {
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.35);
+    .tier-legend {
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid #f59e0b;
+      color: #fbbf24;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+    }
+    .tier-pro {
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid #10b981;
       color: #34d399;
-      box-shadow: 0 0 20px var(--success-glow);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
     }
-    .badge-retry {
-      background: rgba(244, 63, 94, 0.15);
-      border: 1px solid rgba(244, 63, 94, 0.35);
+    .tier-retry {
+      background: rgba(244, 63, 94, 0.18);
+      border: 1px solid #f43f5e;
       color: #fb7185;
-      box-shadow: 0 0 20px var(--danger-glow);
+      box-shadow: 0 0 20px rgba(244, 63, 94, 0.3);
     }
 
-    .candidate-title {
-      font-size: 26px;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .results-grid {
+    .analytics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 14px;
-      margin: 28px 0;
+      margin-bottom: 34px;
     }
-    .res-metric {
+    @media (max-width: 640px) {
+      .analytics-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .ana-box {
       background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--surface-border);
-      border-radius: 16px;
-      padding: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 18px;
       text-align: center;
     }
-    .res-metric .val { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-    .res-metric .lbl { font-size: 12px; color: var(--text-muted); text-transform: uppercase; }
+    .ana-val { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .ana-lbl { font-size: 11px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
 
-    .review-header {
+    /* Review Breakdown */
+    .breakdown-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 36px 0 18px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
-    .review-title { font-size: 18px; font-weight: 700; }
-    .review-filters { display: flex; gap: 8px; }
-    .r-btn {
+    .breakdown-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .tab-btn {
       padding: 6px 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--surface-border);
-      border-radius: 20px;
-      color: var(--text-muted);
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .r-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
 
-    .review-list {
+    .analysis-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
+      margin-bottom: 34px;
     }
-    .rev-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1.5px solid var(--surface-border);
+    .analysis-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 18px;
-      padding: 22px;
+      padding: 20px;
       transition: all 0.2s;
     }
-    .rev-card.is-correct { border-left: 5px solid var(--success); }
-    .rev-card.is-wrong { border-left: 5px solid var(--danger); }
-
-    .rev-top {
+    .analysis-card.passed {
+      border-left: 4px solid var(--emerald);
+      background: rgba(16, 185, 129, 0.03);
+    }
+    .analysis-card.failed {
+      border-left: 4px solid var(--pink);
+      background: rgba(244, 63, 94, 0.03);
+    }
+    .card-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       gap: 12px;
     }
-    .rev-q { font-size: 15px; font-weight: 600; color: #f1f5f9; line-height: 1.4; }
-    .rev-badge {
+    .card-q-text { font-size: 16px; font-weight: 700; color: #fff; }
+    .card-verdict {
       font-size: 12px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 20px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
       white-space: nowrap;
     }
-    .badge-ok { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .badge-fail { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+    .verdict-pass { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .verdict-fail { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
 
-    .ans-block {
+    .ans-row {
       display: flex;
       flex-direction: column;
       gap: 6px;
       font-size: 14px;
       margin-bottom: 12px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 12px 14px;
+      border-radius: 10px;
     }
-    .ans-line {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .ans-tag {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      min-width: 100px;
-    }
-    .ans-val-ok { color: #34d399; font-weight: 600; }
-    .ans-val-fail { color: #fb7185; font-weight: 600; }
+    .ans-tag { color: var(--text-dim); font-size: 12px; font-weight: 600; }
+    .ans-correct-val { color: #34d399; font-weight: 700; }
+    .ans-wrong-val { color: #fb7185; font-weight: 700; }
 
-    .expl-box {
-      background: rgba(10, 14, 28, 0.7);
-      border: 1px solid var(--surface-border);
-      border-radius: 12px;
-      padding: 12px 16px;
+    .tech-expl {
       font-size: 13px;
       color: #94a3b8;
       line-height: 1.5;
+      background: rgba(99, 102, 241, 0.06);
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(99, 102, 241, 0.15);
     }
-    .expl-box strong { color: #818cf8; }
 
-    .spin {
-      display: inline-block;
-      width: 16px; height: 16px;
-      border: 2px solid #fff;
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spinAnim 0.7s linear infinite;
+    .social-share-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
     }
-    @keyframes spinAnim { to { transform: rotate(360deg); } }
 
-    @media (max-width: 640px) {
-      .hero-title { font-size: 30px; }
-      .glass-card { padding: 24px 20px; border-radius: 20px; }
-      .question-prompt { font-size: 19px; }
-      .nav-controls { flex-direction: column-reverse; }
-      .btn-secondary, .btn-glow { width: 100%; }
+    /* Key indicator footer */
+    .key-hint {
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .kbd {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 2px 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #cbd5e1;
     }
   </style>
 </head>
 <body>
 
+  <!-- Ambient Glow & Background -->
+  <div class="cyber-grid"></div>
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
-  <div class="bg-grid"></div>
 
-  <svg width="0" height="0">
-    <defs>
-      <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#6366f1" />
-        <stop offset="50%" stop-color="#06b6d4" />
-        <stop offset="100%" stop-color="#10b981" />
-      </linearGradient>
-    </defs>
-  </svg>
+  <div class="arena-container">
 
-  <div class="main-wrap">
-
-    <header class="navbar">
-      <div class="logo">
-        <div class="logo-badge">⚡</div>
-        <span>DevQuest <span style="font-weight:300; font-size:14px; color:var(--text-muted)">Assessment</span></span>
-      </div>
-      <div style="display:flex; align-items:center; gap:12px;">
-        <a href="/admin" target="_blank" style="display:flex; align-items:center; gap:6px; color:#38bdf8; text-decoration:none; font-size:13px; font-weight:600; background:rgba(6,182,212,0.12); border:1px solid rgba(6,182,212,0.3); padding:6px 14px; border-radius:20px;">
-          <span>📊</span>
-          <span>View Database Records</span>
-        </a>
-        <div class="status-badge">
-          <div class="status-dot"></div>
-          <span>Live System</span>
+    <!-- Top Navigation -->
+    <header class="top-nav">
+      <div class="brand-group">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <span class="brand-title">DevQuest</span>
+          <span class="brand-badge">2.0 Arena</span>
         </div>
+      </div>
+      <div class="nav-actions">
+        <button class="sound-btn" id="sound-toggle" onclick="toggleSound()">
+          <span id="sound-icon">🔊</span>
+          <span id="sound-label">Audio ON</span>
+        </button>
+        <a class="admin-link" href="/admin" target="_blank">
+          <span>🗄️</span>
+          <span>Admin Portal</span>
+        </a>
       </div>
     </header>
 
-    <!-- SCREEN 1: WELCOME PORTAL -->
-    <section id="view-welcome" class="glass-card">
-      <div class="hero-pill">🚀 Interactive Skill Evaluation Platform</div>
-      <h1 class="hero-title">Full-Stack Tech Knowledge Challenge</h1>
-      <p class="hero-desc">
-        Evaluate your real-world coding acumen in Python, Web Architecture, APIs & Databases. 
-        Instant automated evaluation with deep performance analytics.
+    <!-- ==========================================
+         SCREEN 1: WELCOME ARENA LOBBY
+         ========================================== -->
+    <main id="view-welcome" class="cyber-card">
+      <div class="hero-tag">
+        <span>🚀</span>
+        <span>Interactive Developer Battleground</span>
+      </div>
+
+      <h1 class="hero-headline">Master Full-Stack. Level Up Your Code.</h1>
+      <p class="hero-sub">
+        Real-world coding challenge featuring Python, Web Architecture, APIs & Databases. Test your logic, earn developer badges, and record your score in real-time SQLite.
       </p>
 
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-num">5</div>
-          <div class="stat-label">Questions</div>
+      <!-- Category Pills -->
+      <div class="tech-pills">
+        <div class="tech-pill"><span>🐍</span> Python 3.12</div>
+        <div class="tech-pill"><span>🌐</span> RESTful APIs</div>
+        <div class="tech-pill"><span>⚡</span> Modern Frontend</div>
+        <div class="tech-pill"><span>🗄️</span> SQLite Architecture</div>
+        <div class="tech-pill"><span>🏆</span> Instant XP Ranks</div>
+      </div>
+
+      <!-- Holographic Stat Counters -->
+      <div class="stats-deck">
+        <div class="stat-card">
+          <span class="stat-emoji">🎯</span>
+          <div class="stat-val">5</div>
+          <div class="stat-caption">Missions</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">30</div>
-          <div class="stat-label">Total Points</div>
+        <div class="stat-card">
+          <span class="stat-emoji">⚡</span>
+          <div class="stat-val">30</div>
+          <div class="stat-caption">Max XP</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">~5m</div>
-          <div class="stat-label">Est. Time</div>
+        <div class="stat-card">
+          <span class="stat-emoji">⏱️</span>
+          <div class="stat-val">~5m</div>
+          <div class="stat-caption">Speedrun</div>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">SQLite</div>
-          <div class="stat-label">Saved to DB</div>
+        <div class="stat-card">
+          <span class="stat-emoji">💾</span>
+          <div class="stat-val">100%</div>
+          <div class="stat-caption">DB Sync</div>
         </div>
       </div>
 
+      <!-- Avatar Picker -->
+      <div class="avatar-picker-label">
+        <span>👾</span>
+        <span>Choose Your Cyber Avatar:</span>
+      </div>
+      <div class="avatars-row" id="avatar-container">
+        <div class="avatar-btn active" onclick="selectAvatar('⚡', 'Code Ninja')">
+          <span class="emoji">⚡</span>
+          <span>Ninja</span>
+        </div>
+        <div class="avatar-btn" onclick="selectAvatar('🤖', 'Cyber Bot')">
+          <span class="emoji">🤖</span>
+          <span>CyberBot</span>
+        </div>
+        <div class="avatar-btn" onclick="selectAvatar('🚀', 'Tech Pioneer')">
+          <span class="emoji">🚀</span>
+          <span>Pioneer</span>
+        </div>
+        <div class="avatar-btn" onclick="selectAvatar('🧙‍♂️', 'Syntax Wizard')">
+          <span class="emoji">🧙‍♂️</span>
+          <span>Wizard</span>
+        </div>
+        <div class="avatar-btn" onclick="selectAvatar('🔥', 'Bug Hunter')">
+          <span class="emoji">🔥</span>
+          <span>Hunter</span>
+        </div>
+      </div>
+
+      <!-- Candidate Sign-in Form -->
       <form id="start-form" onsubmit="handleStart(event)">
-        <div class="input-group">
-          <label class="input-label" for="cand-name">Candidate Full Name *</label>
-          <input type="text" id="cand-name" class="modern-input" placeholder="e.g. Vaibhav Kadam" required />
+        <div class="input-field-wrap">
+          <label class="field-label" for="cand-name">Developer Handle / Full Name *</label>
+          <input type="text" id="cand-name" class="cyber-input" placeholder="e.g. Vaibhav Aakhade" required />
         </div>
 
-        <div class="input-group">
-          <label class="input-label" for="cand-email">Candidate Work Email *</label>
-          <input type="email" id="cand-email" class="modern-input" placeholder="e.g. vaibhav@example.com" required />
+        <div class="input-field-wrap">
+          <label class="field-label" for="cand-email">Developer Email Address *</label>
+          <input type="email" id="cand-email" class="cyber-input" placeholder="e.g. vaibhav@example.com" required />
         </div>
 
-        <button type="submit" class="btn-glow" id="start-btn">
-          <span>Start Assessment</span>
+        <button type="submit" class="launch-btn" id="btn-start">
+          <span>Enter Battleground</span>
           <span>→</span>
         </button>
       </form>
-    </section>
+    </main>
 
-    <!-- SCREEN 2: INTERACTIVE ASSESSMENT ARENA -->
-    <section id="view-quiz" class="glass-card">
-      <div class="quiz-tracker">
-        <div class="cand-chip">
-          <div class="cand-avatar" id="chip-avatar">V</div>
-          <span id="chip-name">Candidate</span>
+
+    <!-- ==========================================
+         SCREEN 2: QUIZ ARENA CHALLENGE
+         ========================================== -->
+    <section id="view-quiz" class="cyber-card">
+      <div class="arena-header">
+        <div class="player-card">
+          <div class="player-avatar-badge" id="arena-player-avatar">⚡</div>
+          <span class="player-name-txt" id="arena-player-name">Player</span>
         </div>
-        <div class="timer-badge">
-          <span>⏱️</span>
-          <span id="quiz-timer">00:00</span>
+
+        <div class="arena-status-group">
+          <div class="live-streak" id="arena-streak">
+            <span>🔥</span>
+            <span id="streak-count">Streak: 1x</span>
+          </div>
+          <div class="live-timer" id="arena-timer-box">
+            <span>⏱️</span>
+            <span id="arena-timer-txt">00:00</span>
+          </div>
         </div>
       </div>
 
-      <div class="stepper-wrap">
-        <div class="stepper-bar" id="quiz-progress" style="width: 20%;"></div>
+      <!-- Shimmer Stepper Bar -->
+      <div class="arena-progress-wrap">
+        <div class="arena-progress-fill" id="arena-progress-bar" style="width: 20%;"></div>
       </div>
 
+      <!-- Question Prompt Area -->
       <div id="q-content">
-        <div class="q-meta">
-          <div class="q-num-pill" id="q-number-pill">Question 1 of 5</div>
-          <div class="q-pts-pill" id="q-pts-pill">5 Points</div>
+        <div class="q-badge-row">
+          <div class="mission-pill" id="arena-q-num">Mission 1 of 5</div>
+          <div class="xp-pill" id="arena-q-xp">+5 XP Points</div>
         </div>
 
-        <h2 class="question-prompt" id="q-prompt-text">Loading question...</h2>
+        <h2 class="q-title-text" id="arena-q-title">Loading Mission...</h2>
 
-        <div class="options-grid" id="q-options-container"></div>
+        <div class="options-stack" id="arena-options-list"></div>
       </div>
 
-      <div class="nav-controls">
-        <button type="button" class="btn-secondary" id="btn-prev" onclick="navigateQuestion(-1)">
+      <!-- Navigation & Controls -->
+      <div class="arena-nav-bar">
+        <button type="button" class="btn-secondary-ghost" id="arena-prev-btn" onclick="navigateQuestion(-1)">
           ← Previous
         </button>
-        <button type="button" class="btn-glow" id="btn-next" onclick="navigateQuestion(1)" style="width: auto; min-width: 170px;">
-          <span>Next Question</span>
+        <button type="button" class="launch-btn" id="arena-next-btn" onclick="navigateQuestion(1)" style="width: auto; min-width: 190px; margin-top:0;">
+          <span>Next Mission</span>
           <span>→</span>
         </button>
       </div>
+
+      <div class="key-hint">
+        <span>💡 Keyboard Shortcuts:</span>
+        <span class="kbd">A</span>
+        <span class="kbd">B</span>
+        <span class="kbd">C</span>
+        <span class="kbd">D</span>
+        <span>to choose |</span>
+        <span class="kbd">Enter</span>
+        <span>for next</span>
+      </div>
     </section>
 
-    <!-- SCREEN 3: PERFORMANCE ANALYTICS -->
-    <section id="view-results" class="glass-card">
-      <div class="results-hero">
-        <div class="score-circle-wrap">
-          <svg class="score-circle-svg" viewBox="0 0 160 160">
-            <circle class="circle-bg" cx="80" cy="80" r="70" />
-            <circle class="circle-fill" id="radial-progress" cx="80" cy="80" r="70" />
-          </svg>
-          <div class="score-inside">
-            <div class="number" id="res-score-num">0/30</div>
-            <div class="sub" id="res-score-pct">0%</div>
-          </div>
-        </div>
 
-        <div class="badge-pill badge-pass" id="res-status-badge">🎉 Assessment Passed</div>
-        <h2 class="candidate-title" id="res-candidate-name">Great Job!</h2>
-        <p style="color:var(--text-muted); font-size:15px;" id="res-summary-text">
-          Your answers were evaluated and safely recorded in the database.
+    <!-- ==========================================
+         SCREEN 3: PERFORMANCE ANALYTICS & REWARD
+         ========================================== -->
+    <section id="view-results" class="cyber-card">
+      <div class="trophy-hero">
+        <div class="rank-insignia" id="rank-icon">👑</div>
+        <div class="score-banner" id="res-score-headline">0 / 30 XP</div>
+        <div>
+          <span class="rank-tier-badge tier-legend" id="res-rank-badge">S-Tier Coding Legend</span>
+        </div>
+        <h2 style="font-size:24px; font-weight:800; color:#fff; margin-bottom:8px;" id="res-hero-player">
+          Outstanding Performance!
+        </h2>
+        <p style="color:var(--text-dim); font-size:15px;">
+          All scores and telemetry metrics have been permanently logged into your SQLite database.
         </p>
       </div>
 
-      <div class="results-grid">
-        <div class="res-metric">
-          <div class="val" id="metric-pts">0 / 30</div>
-          <div class="lbl">Score Earned</div>
+      <!-- Analytics Metric Cards -->
+      <div class="analytics-grid">
+        <div class="ana-box">
+          <div class="ana-val" id="metric-pts-val">0 / 30</div>
+          <div class="ana-lbl">Score Earned</div>
         </div>
-        <div class="res-metric">
-          <div class="val" id="metric-acc">0%</div>
-          <div class="lbl">Accuracy</div>
+        <div class="ana-box">
+          <div class="ana-val" id="metric-acc-val">0%</div>
+          <div class="ana-lbl">Accuracy Rate</div>
         </div>
-        <div class="res-metric">
-          <div class="val" id="metric-time">00:00</div>
-          <div class="lbl">Time Taken</div>
+        <div class="ana-box">
+          <div class="ana-val" id="metric-time-val">00:00</div>
+          <div class="ana-lbl">Time Elapsed</div>
         </div>
-        <div class="res-metric">
-          <div class="val" id="metric-correct">0 / 5</div>
-          <div class="lbl">Correct Answers</div>
-        </div>
-      </div>
-
-      <div class="review-header">
-        <h3 class="review-title">Detailed Question Analysis</h3>
-        <div class="review-filters">
-          <button class="r-btn active" onclick="filterReview('all', this)">All</button>
-          <button class="r-btn" onclick="filterReview('correct', this)">Correct</button>
-          <button class="r-btn" onclick="filterReview('wrong', this)">Incorrect</button>
+        <div class="ana-box">
+          <div class="ana-val" id="metric-correct-val">0 / 5</div>
+          <div class="ana-lbl">Missions Solved</div>
         </div>
       </div>
 
-      <div class="review-list" id="review-list-container"></div>
+      <!-- Detailed Review List -->
+      <div class="breakdown-header">
+        <h3 class="breakdown-title">Mission Breakdown & Explanations</h3>
+        <div class="filter-tabs">
+          <button class="tab-btn active" onclick="filterReviewList('all', this)">All</button>
+          <button class="tab-btn" onclick="filterReviewList('correct', this)">Correct</button>
+          <button class="tab-btn" onclick="filterReviewList('wrong', this)">Missed</button>
+        </div>
+      </div>
 
-      <div style="display:flex; justify-content:center; gap:16px; margin-top:36px; flex-wrap:wrap;">
-        <button class="btn-glow" onclick="location.reload()" style="width:auto; min-width:200px;">
-          🔄 Retake Assessment
+      <div class="analysis-list" id="analysis-list-items"></div>
+
+      <!-- Action Buttons -->
+      <div class="social-share-row">
+        <button class="launch-btn" onclick="location.reload()" style="width: auto; min-width: 200px; margin-top:0;">
+          <span>🔄 Retake Mission</span>
         </button>
-        <a class="btn-secondary" href="/api/responses" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center;">
-          📊 View SQLite Raw Records
+        <button class="btn-secondary-ghost" onclick="copyBragText()">
+          <span>📋 Copy Score Summary</span>
+        </button>
+        <a class="btn-secondary-ghost" href="/admin" target="_blank" style="text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+          <span>🗄️ Open Admin Portal</span>
         </a>
       </div>
     </section>
@@ -801,17 +1114,90 @@
   </div>
 
   <script>
-    let candidate = { name: '', email: '' };
+    /* ========================================================
+       AUDIO ENGINE (Pure Web Audio API - Zero External Files)
+       ======================================================== */
+    let audioContext = null;
+    let soundEnabled = true;
+
+    function getAudioCtx() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      return audioContext;
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + duration);
+      } catch (e) {
+        console.warn('Audio note blocked', e);
+      }
+    }
+
+    function soundClick() {
+      playTone(520, 'sine', 0.08);
+    }
+
+    function soundSelect() {
+      playTone(680, 'triangle', 0.12);
+    }
+
+    function soundNext() {
+      playTone(440, 'sine', 0.08);
+      playTone(880, 'sine', 0.12, 0.06);
+    }
+
+    function soundVictory() {
+      playTone(523.25, 'triangle', 0.15, 0.0);
+      playTone(659.25, 'triangle', 0.15, 0.1);
+      playTone(783.99, 'triangle', 0.15, 0.2);
+      playTone(1046.50, 'triangle', 0.35, 0.3);
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('sound-icon').textContent = soundEnabled ? '🔊' : '🔇';
+      document.getElementById('sound-label').textContent = soundEnabled ? 'Audio ON' : 'Audio Muted';
+      if (soundEnabled) soundClick();
+    }
+
+
+    /* ========================================================
+       STATE & APP LOGIC
+       ======================================================== */
+    let candidate = { name: '', email: '', avatar: '⚡', role: 'Ninja' };
     let questions = [];
     let currentIdx = 0;
     let answers = {};
     let timerSeconds = 0;
     let timerInterval = null;
     let submissionResult = null;
+    let currentStreak = 1;
 
     const OPTION_KEYS = ['A', 'B', 'C', 'D'];
 
-    async function initQuestions() {
+    function selectAvatar(emoji, role) {
+      candidate.avatar = emoji;
+      candidate.role = role;
+      document.querySelectorAll('.avatar-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      soundClick();
+    }
+
+    async function loadQuestions() {
       try {
         const res = await fetch('/api/questions');
         const data = await res.json();
@@ -819,10 +1205,10 @@
           questions = data.questions;
         }
       } catch (err) {
-        console.error('Failed to load questions', err);
+        console.error('Failed to load questions from backend', err);
       }
     }
-    initQuestions();
+    loadQuestions();
 
     function handleStart(e) {
       e.preventDefault();
@@ -831,11 +1217,12 @@
 
       if (!name || !email) return;
 
+      soundNext();
       candidate.name = name;
       candidate.email = email;
 
-      document.getElementById('chip-name').textContent = name;
-      document.getElementById('chip-avatar').textContent = name.charAt(0).toUpperCase();
+      document.getElementById('arena-player-name').textContent = name;
+      document.getElementById('arena-player-avatar').textContent = candidate.avatar;
 
       document.getElementById('view-welcome').style.display = 'none';
       document.getElementById('view-quiz').style.display = 'block';
@@ -851,7 +1238,12 @@
         timerSeconds++;
         const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
         const secs = String(timerSeconds % 60).padStart(2, '0');
-        document.getElementById('quiz-timer').textContent = mins + ':' + secs;
+        const timerTxt = mins + ':' + secs;
+        document.getElementById('arena-timer-txt').textContent = timerTxt;
+
+        if (timerSeconds > 240) {
+          document.getElementById('arena-timer-box').classList.add('pulse-danger');
+        }
       }, 1000);
     }
 
@@ -867,13 +1259,13 @@
       const q = questions[currentIdx];
 
       const pct = ((currentIdx + 1) / questions.length) * 100;
-      document.getElementById('quiz-progress').style.width = pct + '%';
+      document.getElementById('arena-progress-bar').style.width = pct + '%';
 
-      document.getElementById('q-number-pill').textContent = 'Question ' + (currentIdx + 1) + ' of ' + questions.length;
-      document.getElementById('q-pts-pill').textContent = q.points + ' Points';
-      document.getElementById('q-prompt-text').textContent = q.question;
+      document.getElementById('arena-q-num').textContent = 'Mission ' + (currentIdx + 1) + ' of ' + questions.length;
+      document.getElementById('arena-q-xp').textContent = '+' + q.points + ' XP Points';
+      document.getElementById('arena-q-title').textContent = q.question;
 
-      const container = document.getElementById('q-options-container');
+      const container = document.getElementById('arena-options-list');
       container.innerHTML = '';
 
       if (q.type === 'mcq') {
@@ -882,29 +1274,39 @@
           const keyLetter = OPTION_KEYS[idx] || (idx + 1);
 
           const card = document.createElement('div');
-          card.className = 'opt-card ' + (isSelected ? 'selected' : '');
-          card.innerHTML = '<div class="opt-key">' + keyLetter + '</div><div class="opt-text">' + opt + '</div>';
-          card.onclick = () => selectOption(q.id, opt);
+          card.className = 'cyber-opt ' + (isSelected ? 'active-choice' : '');
+          card.innerHTML = `
+            <div class="key-badge">${keyLetter}</div>
+            <div class="opt-label-txt">${opt}</div>
+          `;
+          card.onclick = () => {
+            soundSelect();
+            answers[q.id] = opt;
+            renderCurrentQuestion();
+          };
           container.appendChild(card);
         });
       } else {
         const currVal = answers[q.id] || '';
-        container.innerHTML = '<div class="input-group"><label class="input-label">Type your exact command/answer below:</label><input type="text" class="modern-input" id="input-text-' + q.id + '" placeholder="e.g. SELECT" value="' + currVal + '" oninput="handleTextInput(\'' + q.id + '\', this.value)" style="font-family:JetBrains Mono, monospace; font-size:16px; letter-spacing:1px;"/></div>';
+        container.innerHTML = `
+          <div class="input-field-wrap">
+            <label class="field-label">Command Execution Input:</label>
+            <input type="text" class="cyber-input" id="input-txt-${q.id}" 
+                   placeholder="e.g. SELECT, True, list" value="${currVal}" 
+                   oninput="handleTextInput('${q.id}', this.value)" 
+                   style="font-family:'JetBrains Mono', monospace; font-size:16px; letter-spacing:1px;" />
+          </div>
+        `;
       }
 
-      document.getElementById('btn-prev').disabled = (currentIdx === 0);
+      document.getElementById('arena-prev-btn').disabled = (currentIdx === 0);
 
-      const nextBtn = document.getElementById('btn-next');
+      const nextBtn = document.getElementById('arena-next-btn');
       if (currentIdx === questions.length - 1) {
-        nextBtn.innerHTML = '<span>Submit Assessment</span> <span>🚀</span>';
+        nextBtn.innerHTML = '<span>Complete Battle</span> <span>⚡</span>';
       } else {
-        nextBtn.innerHTML = '<span>Next Question</span> <span>→</span>';
+        nextBtn.innerHTML = '<span>Next Mission</span> <span>→</span>';
       }
-    }
-
-    function selectOption(qid, value) {
-      answers[qid] = value;
-      renderCurrentQuestion();
     }
 
     function handleTextInput(qid, val) {
@@ -915,6 +1317,7 @@
       const nextIndex = currentIdx + step;
 
       if (nextIndex >= 0 && nextIndex < questions.length) {
+        soundNext();
         currentIdx = nextIndex;
         renderCurrentQuestion();
       } else if (nextIndex >= questions.length) {
@@ -922,10 +1325,32 @@
       }
     }
 
+    /* Keyboard Shortcuts */
+    window.addEventListener('keydown', (e) => {
+      if (document.getElementById('view-quiz').style.display !== 'block') return;
+      if (!questions.length) return;
+
+      const q = questions[currentIdx];
+      if (q.type === 'mcq') {
+        const key = e.key.toUpperCase();
+        const keyIndex = OPTION_KEYS.indexOf(key);
+        if (keyIndex !== -1 && q.options[keyIndex]) {
+          soundSelect();
+          answers[q.id] = q.options[keyIndex];
+          renderCurrentQuestion();
+        }
+      }
+
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        navigateQuestion(1);
+      }
+    });
+
     async function submitAssessment() {
-      const nextBtn = document.getElementById('btn-next');
+      const nextBtn = document.getElementById('arena-next-btn');
       nextBtn.disabled = true;
-      nextBtn.innerHTML = '<span class="spin"></span> <span>Evaluating...</span>';
+      nextBtn.innerHTML = '<span>Evaluating Logic...</span> <span>⏳</span>';
 
       const finalTime = stopTimer();
 
@@ -947,12 +1372,12 @@
         } else {
           alert('Submission error: ' + data.message);
           nextBtn.disabled = false;
-          nextBtn.innerHTML = '<span>Submit Assessment</span> <span>🚀</span>';
+          nextBtn.innerHTML = '<span>Complete Battle</span> <span>⚡</span>';
         }
       } catch (err) {
-        alert('Server connection error. Make sure app.py is running!');
+        alert('Server communication error. Make sure app.py is running!');
         nextBtn.disabled = false;
-        nextBtn.innerHTML = '<span>Submit Assessment</span> <span>🚀</span>';
+        nextBtn.innerHTML = '<span>Complete Battle</span> <span>⚡</span>';
       }
     }
 
@@ -960,39 +1385,51 @@
       document.getElementById('view-quiz').style.display = 'none';
       document.getElementById('view-results').style.display = 'block';
 
-      document.getElementById('res-score-num').textContent = data.obtained + '/' + data.total;
-      document.getElementById('res-score-pct').textContent = data.percentage + '%';
-      document.getElementById('res-candidate-name').textContent = data.name + ', Assessment Complete!';
+      soundVictory();
 
-      const isPassed = data.percentage >= 50;
-      const badge = document.getElementById('res-status-badge');
-      if (isPassed) {
-        badge.className = 'badge-pill badge-pass';
-        badge.textContent = '🏆 ' + data.status;
+      // Trigger Confetti Celebration!
+      try {
+        confetti({
+          particleCount: 120,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#6366f1', '#06b6d4', '#ec4899', '#f59e0b', '#10b981']
+        });
+      } catch(e) {}
+
+      document.getElementById('res-score-headline').textContent = `${data.obtained} / ${data.total} XP`;
+      document.getElementById('res-hero-player').textContent = `${data.name}, Assessment Finished!`;
+
+      const badge = document.getElementById('res-rank-badge');
+      const rankIcon = document.getElementById('rank-icon');
+
+      if (data.percentage >= 80) {
+        badge.className = 'rank-tier-badge tier-legend';
+        badge.textContent = '👑 S-Tier Coding Legend';
+        rankIcon.textContent = '👑';
+      } else if (data.percentage >= 50) {
+        badge.className = 'rank-tier-badge tier-pro';
+        badge.textContent = '⚔️ A-Tier Tech Architect';
+        rankIcon.textContent = '⚔️';
       } else {
-        badge.className = 'badge-pill badge-retry';
-        badge.textContent = '⚡ Needs Improvement (' + data.percentage + '%)';
+        badge.className = 'rank-tier-badge tier-retry';
+        badge.textContent = '🛡️ Needs Improvement (' + data.percentage + '%)';
+        rankIcon.textContent = '🛡️';
       }
 
-      document.getElementById('metric-pts').textContent = data.obtained + ' / ' + data.total;
-      document.getElementById('metric-acc').textContent = data.percentage + '%';
-      document.getElementById('metric-time').textContent = totalTime;
+      document.getElementById('metric-pts-val').textContent = `${data.obtained} / ${data.total}`;
+      document.getElementById('metric-acc-val').textContent = `${data.percentage}%`;
+      document.getElementById('metric-time-val').textContent = totalTime;
 
       const correctCount = data.analysis.filter(a => a.is_correct).length;
-      document.getElementById('metric-correct').textContent = correctCount + ' / ' + data.analysis.length;
-
-      setTimeout(() => {
-        const circumference = 440;
-        const targetOffset = circumference - (circumference * (data.percentage / 100));
-        document.getElementById('radial-progress').style.strokeDashoffset = targetOffset;
-      }, 150);
+      document.getElementById('metric-correct-val').textContent = `${correctCount} / ${data.analysis.length}`;
 
       renderReviewList(data.analysis);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function renderReviewList(analysis, filter = 'all') {
-      const container = document.getElementById('review-list-container');
+      const container = document.getElementById('analysis-list-items');
       container.innerHTML = '';
 
       analysis.forEach((item, idx) => {
@@ -1001,39 +1438,43 @@
 
         const isOk = item.is_correct;
         const card = document.createElement('div');
-        card.className = 'rev-card ' + (isOk ? 'is-correct' : 'is-wrong');
+        card.className = `analysis-card ${isOk ? 'passed' : 'failed'}`;
 
-        card.innerHTML = 
-          '<div class="rev-top">' +
-            '<div class="rev-q">' + (idx + 1) + '. ' + item.question + '</div>' +
-            '<div class="rev-badge ' + (isOk ? 'badge-ok' : 'badge-fail') + '">' +
-              (isOk ? '✓ Correct' : '✗ Missed') + ' (' + item.earned + '/' + item.max + ' pts)' +
-            '</div>' +
-          '</div>' +
-          '<div class="ans-block">' +
-            '<div class="ans-line">' +
-              '<span class="ans-tag">Your Answer:</span>' +
-              '<span class="' + (isOk ? 'ans-val-ok' : 'ans-val-fail') + '">' + item.user_answer + '</span>' +
-            '</div>' +
-            (!isOk ? 
-              '<div class="ans-line">' +
-                '<span class="ans-tag">Correct Answer:</span>' +
-                '<span class="ans-val-ok">' + item.correct_answer + '</span>' +
-              '</div>' : '') +
-          '</div>' +
-          '<div class="expl-box">' +
-            '<strong>💡 Technical Breakdown:</strong> ' + item.explanation +
-          '</div>';
+        card.innerHTML = `
+          <div class="card-top">
+            <div class="card-q-text">#${idx + 1}. ${item.question}</div>
+            <div class="card-verdict ${isOk ? 'verdict-pass' : 'verdict-fail'}">
+              ${isOk ? '✓ Correct' : '✗ Incorrect'} (${item.earned}/${item.max} XP)
+            </div>
+          </div>
+          <div class="ans-row">
+            <div><span class="ans-tag">Your Submitted Answer:</span> <span class="${isOk ? 'ans-correct-val' : 'ans-wrong-val'}">${item.user_answer}</span></div>
+            ${!isOk ? `<div><span class="ans-tag">Correct Solution:</span> <span class="ans-correct-val">${item.correct_answer}</span></div>` : ''}
+          </div>
+          <div class="tech-expl">
+            <strong>💡 Technical Breakdown:</strong> ${item.explanation}
+          </div>
+        `;
         container.appendChild(card);
       });
     }
 
-    function filterReview(type, btn) {
-      document.querySelectorAll('.r-btn').forEach(b => b.classList.remove('active'));
+    function filterReviewList(type, btn) {
+      soundClick();
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       if (submissionResult) {
         renderReviewList(submissionResult.analysis, type);
       }
+    }
+
+    function copyBragText() {
+      if (!submissionResult) return;
+      soundClick();
+      const txt = `⚡ DevQuest 2.0 Battle Report:\nDeveloper: ${submissionResult.name}\nScore: ${submissionResult.obtained}/${submissionResult.total} XP (${submissionResult.percentage}%)\nStatus: ${submissionResult.status}\nTake the challenge at: http://127.0.0.1:5000`;
+      navigator.clipboard.writeText(txt).then(() => {
+        alert('🎉 Score card copied to clipboard!');
+      });
     }
   </script>
 </body>
