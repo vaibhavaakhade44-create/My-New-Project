@@ -265,6 +265,6 @@ if __name__ == '__main__':
     print("  DevQuest Assessment Server READY!")
     print("  Assessment: http://127.0.0.1:5000")
     print("  Admin DB:   http://127.0.0.1:5000/admin")
-    print("="*55 + "\n")
-    app.run(port=5000, debug=os.environ.get('FLASK_DEBUG') == '1')
+    app.config['TEMPLATES_AUTO_RELOAD'] = True
+    app.run(port=5000, debug=True)
 
