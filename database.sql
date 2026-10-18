@@ -20,20 +20,3 @@ CREATE TABLE IF NOT EXISTS meetup_registrations (
     attendance TEXT NOT NULL,
     biggest_problem TEXT
 );
-
--- Practice: insert one meetup registration.
--- INSERT INTO meetup_registrations (
---     full_name, whatsapp_number, working_on, role, looking_for, attendance, biggest_problem
--- ) VALUES (
---     'Hariom Singh', '9876543210', 'Building an AI Resume Screener',
---     'Founder', 'Funding', 'Yes', 'Marketing and user acquisition'
--- );
-
--- Practice: list all registrations.
--- SELECT * FROM meetup_registrations;
-
--- Practice: find one person by name.
--- SELECT * FROM meetup_registrations WHERE full_name = 'Hariom Singh';
-
--- Practice: count people who plan to attend.
--- SELECT COUNT(*) FROM meetup_registrations WHERE attendance = 'Yes';
